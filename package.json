@@ -1,0 +1,20 @@
+{
+  "name": "expressful",
+  "version": "0.1.0",
+  "author": "Jeroen Ransijn",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "cson": "^3.0.2",
+    "errorhandler": "^1.4.3",
+    "express": "^4.13.4",
+    "highlight.js": "^9.5.0",
+    "marked": "^0.3.5",
+    "morgan": "^1.7.0",
+    "nunjucks": "^2.4.2",
+    "remarkable": "^1.6.2",
+    "serve-favicon": "^2.3.0",
+    "express-session": "^1.14.0"
+  }
+}
