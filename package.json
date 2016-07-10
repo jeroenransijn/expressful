@@ -7,6 +7,9 @@
     "node": ">=5.4.1"
   },
   "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/jeroenransijn/expressful.git"
@@ -38,5 +41,9 @@
     "restful",
     "router",
     "web"
-  ]
+  ],
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  }
 }
