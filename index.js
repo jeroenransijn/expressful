@@ -1,8 +1,8 @@
 'use strict';
 const express = require('express');
-const setup = require('./setup');
-const start = require('./start');
-const servePages = require('./serve-pages');
+const setup = require('./lib/setup');
+const start = require('./lib/start');
+const servePages = require('./lib/serve-pages');
 
 /**
  * Returns expressful app
