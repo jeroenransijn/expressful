@@ -1,4 +1,0 @@
-title: 'Blog'
-__list:
-  directory: './blog',
-  as: 'posts'
