@@ -9,14 +9,14 @@ $ npm install expressful --save
 
 ## Quick start
 
-Expressful sets up your express app with common modules.
+Expressful sets up your express app with less boilerplate.
 
 ```javascript
 const app = require('expressful')();
 app.start();
 ```
 
-Your app would probably look somewhat like this.
+It also gives you
 
 ```javascript
 const expressful = require('expressful');
@@ -24,8 +24,8 @@ const expressful = require('expressful');
 // setup your express app, sets static directory to `public`
 const app = expressful();
 
-// matches routes to views inside of `/views/pages/${page}`
-app.servePages();
+// render ./content using expressful-content + nunjucks
+app.serveContent();
 
 // use app as a regular express app
 app.post('/contact', (req, res) => res.json({ success: true }));
@@ -55,77 +55,192 @@ Expressful assumes this project structure for all features to work:
 ```
 .
 |-- /public/ # static directory
+|-- /content
+|   |-- /${page}.(cson|json)
+|   └-- /homepage.cson
 |-- /views/
-|   └-- /pages/
-|       |-- /${page}.html
-|       └-- /homepage.html # rendered with nunjucks
+|   |-- /${page}.html
+|   └-- /homepage.html # rendered with nunjucks
 ```
 
 ### app = expressful();
-
-1. sets up static directory for `/public`
-2. sets up all the modules listed above
-3. mutes favicon request by default
-4. sets up `nunjucks` with `Remarkable` and `highlight.js`
 
 ```javascript
 const expressful = require('expressful');
 const app = expressful();
 ```
 
-### app.start();
+1. sets up static directory for `/public`
+2. sets up all the modules listed above
+3. mutes favicon request by default
+4. sets up `nunjucks` with `Remarkable` and `highlight.js`
 
-1. sets up `errorhandler` on development
-2. proxy for `app.listen`
+### app.start();
 
 ```javascript
 const app = require('expressful')();
 app.start(); // <----
 ```
 
-### app.servePages();
+1. sets up `errorhandler` on development
+2. proxy for `app.listen`
 
-1. sets up routes for `/:page` and `/` (where :page defaults to `homepage`)
-2. if `/views/pages/${page}.html` exists continue, otherwise call `next()`
-3. content = merge `/content/global.cson` with `/content/${page}.cson` if they exist
-4. res.render(`/views/pages/${page}.html`, `content`);
+### app.serveContent();
+
+Uses [expressful-content](https://github.com/jeroenransijn/expressful-content) to give you a flat file based content management system.
 
 ```javascript
 // ./app.js
 const app = require('expressful')();
-app.servePages(); // <----
+app.serveContent(); // <----
 app.start();
 ```
 
-```CSON
-# ./content/global.cson
+### The content folder represents your routes
 
-brandName: "Expressful"
+* By default the route name is used for both `content` and `view`
+
+```
+GET /page
+  1. ./content/page.(cson|json) = { title: 'Page' }
+  2. ./views/page.html = <h1>{{ title }}</h1>
+  => <h1>Page</h1>
 ```
 
-```CSON
+* You can nest content, it will look for the view
+
+```
+GET /deep/page
+  1. ./content/deep/page.(cson|json) = { title: 'Nested Page' }
+  2. ./views/deep/page.html = <h1>{{ title }}</h1>
+  => <h1>Nested Page</h1>
+```
+
+* Double underscores in filenames are considered (fake) slashes.
+* Overwrite what view to render with the `$layout` property
+
+```
+GET /blog/2016/10/06/article-title
+  1. ./content/blog/2016__10__06__article.cson
+     = { $layout: 'blogpost.html', title: 'Article' }
+  2. ./views/blogpost.html = <h1>{{ title }}</h1>
+  => <h1>Article</h1>
+```
+
+* If there is content but no view, `next()` is called
+
+```
+GET /missing-view
+  1. ./content/missing-view.cson
+  2. view is missing
+  => next();
+```
+
+*
+
+### Basic homepage example with `__extend` content mixin
+
+Assume the following project structure
+
+```
+.
+|-- /content/
+|   └-- /homepage.cson
+|-- /views/
+|   └-- /homepage.html
+```
+
+```cson
 # ./content/homepage.cson
 
-title: "Homepage"
-markdown:
-	intro: '''
-	# Welcome
+__extend: '_global.cson'
+title: 'Homepage'
+```
 
-	Lorem ipsum *markdown*
-	'''
+```cson
+# ./content/_global.cson
+
+brandName: 'Expressful'
+```
+
+**Filenames that start with an underscore (_) will not be routed**
+
+```html
+<!-- ./views/homepage.html -->
+<h1>{{ brandName }} - {{ title }}</h1>
+```
+
+`GET /` renders:
+
+```html
+<h1>Expressful - Homepage</h1>
+```
+
+**by default / routes to homepage**
+
+### Blog example with `$layout` and `__list` content mixin
+
+Assume the following project structure
+
+```
+.
+|-- /content/
+|   |   /blog.cson
+|   └-- /blog/
+|       |-- 2016__10__06__first-article.cson
+|       └-- 2016__10__07__second-article.cson
+|-- /views/
+|   |   /blog.html
+|   └-- /blogpost.html
+```
+
+#### Articles use `$layout` to set the layout
+
+```
+# ./content/blog/2016__10__06__first-article.cson
+$layout: 'blogpost.html'
+title: 'First'
+```
+
+```
+# ./content/blog/2016__10__07__second-article.cson
+$layout: 'blogpost.html'
+title: 'Second'
 ```
 
 ```html
-<!-- ./views/pages/homepage.html -->
-<h1>{{ brandName }} - {{ title }}</h1>
-<article>
-	{{ markdown.intro | markdown | safe }}
-</article>
-<footer>{{ year }} &copy; Expressful by Jeroen Ransijn</footer>
+<!-- ./views/blogpost.html -->
+<h1>{{ title }}</h1>
 ```
 
-**Note:** `year`, `month` and `day` are always available.
+`GET /blog/2016/10/07/second-article` renders:
 
+```html
+<h1>Second</h1>
+```
+
+#### The overview itself uses `__list`
+
+```blog.cson
+title: 'Blog'
+__list:
+  directory: './blog',
+  as: 'posts'
+```
+
+```blog.html
+{% for post in posts %}
+<h1>post.title</h1>
+{% endfor %}
+```
+
+`GET /blog` renders:
+
+```html
+<!-- TODO: figure out if this is actually the order -->
+<h1>First</h1>
+<h1>Second</h1>
+```
 
 ### Nunjucks templating
 
@@ -141,7 +256,8 @@ const expressful = require('expressful');
 
 // Values are defaults
 const app = expressful({
-	publicFolderName: 'public', // 'public' is the default static folder
+	publicDirectory: 'public', // 'public' is the default static folder
+  viewsDirectory: 'views', // don't change this for no reason, used for testing mainly
 	faviconPath: 'public/favicon.ico', // path to favicon
 	muteFavicon: true, // make it easy to get started without a favicon
 	useNunjucks: true // nunjucks is the default templating engine
