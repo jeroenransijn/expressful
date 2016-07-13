@@ -1,5 +1,5 @@
 # Expressful
-> Express.js with a bit of convention, convenience and opinion
+> Express.js with a bit of convention and convenience. Optimized for branding websites.
 
 **Currently in development and untested**
 
@@ -10,15 +10,18 @@ $ npm install expressful --save
 ## Quick start
 
 Expressful sets up your express app with less boilerplate.
+`app` is still an Express.js app you know and love.
 
 ```javascript
-const app = require('expressful')();
+// app.js
+require('expressful')();
 app.start();
 ```
 
-It also gives you
+Expressful gives you some powerful functions that cut down boilerplate.
 
 ```javascript
+// app.js
 const expressful = require('expressful');
 
 // setup your express app, sets static directory to `public`
@@ -27,43 +30,108 @@ const app = expressful();
 // render ./content using expressful-content + nunjucks
 app.serveContent();
 
-// use app as a regular express app
-app.post('/contact', (req, res) => res.json({ success: true }));
-
 // proxy for app.listen
 app.start();
 ```
 
-## Convention
+## Goal of Expressful
 
-Express.js was broken down in different npm modules when transitioned from version 3 to 4. Expressful bundles the most used dependencies that used to be in version 3:
 
-* `body-parser`
-* `cookie-parser`
-* `errorhandler`
-* `morgan`
-* `serve-favicon`
-* `express-session`
-* `errorhandler`
+* Removes setup time
+* Easy for beginners
+* Focus on content and HTML + CSS
+* Favors convention over configuration
 
-**Note:** `multer` for file uploads is left out.
+## Optimized for branding websites
 
-## Convenience
+The goal of Expressful is to give you a convenient starting point for **branding websites**.
 
-Expressful assumes this project structure for all features to work:
+### What is a branding website?
+
+Think about the 3 different types of web services you can make:
+
+* **Branding websites**: semi static content, focused on brand design, mainly HTML & CSS
+* **Single page apps**: static and dynamic content, complex UI with heavy JavaScript
+* **API**: only dynamic content, serves JSON/XML only
+
+Expressful is optimized for just **branding websites**.
+Express.js on the other hand is unopinionated for all 3 types.
+
+### Websites you can make with Expressful
+
+* **App landing pages**
+* **Small business websites**
+* **Portfolio's**
+
+## Total beginner steps to run an Expressful app
+
+1. [Install node.js](https://nodejs.org/en/download/)
+
+2. Create the following project structure
 
 ```
 .
-|-- /public/ # static directory
-|-- /content
-|   |-- /${page}.(cson|json)
+|-- app.js
+└-- package.json
+```
+
+3. Put this in your `pacakage.json`
+
+```
+{
+  {
+  "dependencies": {
+    "expressful": "^0.2.0"
+  }
+}
+```
+
+4. Open terminal, `cd` to your directory and type
+
+```
+$ npm install
+```
+
+5. Put this in your `app.js`
+
+```javascript
+const expressful = require('expressful');
+const app = expressful();
+app.start();
+```
+
+6. Open terminal, `cd` to your directory and type
+
+```
+$ node app.js
+```
+
+7. Open your browser on [http://localhost:3000/](http://localhost:3000/)
+
+8. Learn more about Expressful
+
+## A simple project structure
+
+Expressful is focused on **content**, **HTML** and **CSS**.
+Most of your projects will look somewhat like this:
+
+```
+.
+|-- /node_modules/        # contains dependencies such as expressful
+|-- /public/              # contains assets such as images
+|-- /content              # contains json and cson files
+|   |-- /${page}.json     
 |   └-- /homepage.cson
-|-- /views/
+|-- /views/               # contains html files
 |   |-- /${page}.html
-|   └-- /homepage.html # rendered with nunjucks
+|   └-- /homepage.html
+|-- /app.js               # starting point of your node app
+└-- /package.json         # information about your app and dependencies
 ```
 
 ### app = expressful();
+
+The same as an Express.js app with some additional features.
 
 ```javascript
 const expressful = require('expressful');
@@ -71,9 +139,22 @@ const app = expressful();
 ```
 
 1. sets up static directory for `/public`
-2. sets up all the modules listed above
-3. mutes favicon request by default
-4. sets up `nunjucks` with `Remarkable` and `highlight.js`
+2. mutes favicon request by default
+3. sets up `nunjucks` templating (with `Remarkable` and `highlight.js`)
+4. sets up the following modules
+  * `body-parser`
+  * `cookie-parser`
+  * `errorhandler`
+  * `morgan`
+  * `serve-favicon`
+  * `express-session`
+  * `errorhandler`
+
+**Note:** `multer` for file uploads is left out.
+
+### Expressful sets up Express.js how you want it
+
+Express.js was broken down in different modules when it transitioned from version 3 to 4. Expressful bundles the most used dependencies that used to be in version 3 of Express.js.
 
 ### app.start();
 
@@ -83,11 +164,12 @@ app.start(); // <----
 ```
 
 1. sets up `errorhandler` on development
-2. proxy for `app.listen`
+2. prints out a table of all the routes you use in your app
+3. proxy for `app.listen` on port 3000
 
 ### app.serveContent();
 
-Uses [expressful-content](https://github.com/jeroenransijn/expressful-content) to give you a flat file based content management system.
+The `serveContent` function sets up your routes according to your `content` directory.
 
 ```javascript
 // ./app.js
@@ -96,7 +178,11 @@ app.serveContent(); // <----
 app.start();
 ```
 
+Expressful uses [expressful-content](https://github.com/jeroenransijn/expressful-content) under the hood to give your content files superpowers.
+
 ### The content folder represents your routes
+
+![Basic Routes inforgraphic](docs/basic-routes.png)
 
 * By default the route name is used for both `content` and `view`
 
@@ -135,8 +221,6 @@ GET /missing-view
   2. view is missing
   => next();
 ```
-
-*
 
 ### Basic homepage example with `__extend` content mixin
 
@@ -256,11 +340,11 @@ const expressful = require('expressful');
 
 // Values are defaults
 const app = expressful({
-	publicDirectory: 'public', // 'public' is the default static folder
+  publicDirectory: 'public', // 'public' is the default static folder
   viewsDirectory: 'views', // don't change this for no reason, used for testing mainly
-	faviconPath: 'public/favicon.ico', // path to favicon
-	muteFavicon: true, // make it easy to get started without a favicon
-	useNunjucks: true // nunjucks is the default templating engine
+  faviconPath: 'public/favicon.ico', // path to favicon
+  muteFavicon: true, // make it easy to get started without a favicon
+  useNunjucks: true // nunjucks is the default templating engine
 });
 ```
 
