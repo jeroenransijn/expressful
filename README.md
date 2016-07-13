@@ -1,7 +1,7 @@
 # Expressful
 > Express.js with a bit of convention and convenience. Optimized for branding websites.
 
-**Currently in development and untested**
+**Currently in development**
 
 ```
 $ npm install expressful --save
@@ -24,18 +24,18 @@ Expressful gives you some powerful functions that cut down boilerplate.
 // app.js
 const expressful = require('expressful');
 
-// setup your express app, sets static directory to `public`
+// creates your express app with common dependencies and nunjucks templating
+// also sets static directory to `public`
 const app = expressful();
 
-// render ./content using expressful-content + nunjucks
+// turns your content directory into routes and matches its to views
 app.serveContent();
 
-// proxy for app.listen
+// proxy for app.listen and helpful dev stuff
 app.start();
 ```
 
-## Goal of Expressful
-
+## Goals of Expressful
 
 * Removes setup time
 * Easy for beginners
@@ -129,7 +129,7 @@ Most of your projects will look somewhat like this:
 └-- /package.json         # information about your app and dependencies
 ```
 
-### app = expressful();
+### app = expressful(); explained
 
 The same as an Express.js app with some additional features.
 
@@ -156,7 +156,7 @@ const app = expressful();
 
 Express.js was broken down in different modules when it transitioned from version 3 to 4. Expressful bundles the most used dependencies that used to be in version 3 of Express.js.
 
-### app.start();
+### app.start(); explained
 
 ```javascript
 const app = require('expressful')();
@@ -167,7 +167,7 @@ app.start(); // <----
 2. prints out a table of all the routes you use in your app
 3. proxy for `app.listen` on port 3000
 
-### app.serveContent();
+### app.serveContent(); explained
 
 The `serveContent` function sets up your routes according to your `content` directory.
 
@@ -187,40 +187,53 @@ Expressful uses [expressful-content](https://github.com/jeroenransijn/expressful
 * By default the route name is used for both `content` and `view`
 
 ```
-GET /page
-  1. ./content/page.(cson|json) = { title: 'Page' }
-  2. ./views/page.html = <h1>{{ title }}</h1>
-  => <h1>Page</h1>
+GET /page MATCHES
+
+  CONTENT FILE: ./content/page.json
+
+    { title: 'Page' }
+
+  LAYOUT FILE: ./views/page.html
+
+    <h1>{{ title }}</h1>
+
+OUTPUT => <h1>Page</h1>
 ```
 
-* You can nest content, it will look for the view
+* You can have routes with slashes. It will look for nested content.
 
 ```
-GET /deep/page
-  1. ./content/deep/page.(cson|json) = { title: 'Nested Page' }
-  2. ./views/deep/page.html = <h1>{{ title }}</h1>
-  => <h1>Nested Page</h1>
+GET /deep/page MATCHES
+
+  CONTENT FILE: ./content/deep/page.json
+
+    { title: 'Nested Page' }
+
+  LAYOUT FILE: ./views/deep/page.html WHICH CONTAINS
+
+    <h1>{{ title }}</h1>
+
+OUTPUTS => <h1>Nested Page</h1>
 ```
 
 * Double underscores in filenames are considered (fake) slashes.
 * Overwrite what view to render with the `$layout` property
 
 ```
-GET /blog/2016/10/06/article-title
-  1. ./content/blog/2016__10__06__article.cson
-     = { $layout: 'blogpost.html', title: 'Article' }
-  2. ./views/blogpost.html = <h1>{{ title }}</h1>
-  => <h1>Article</h1>
+GET /blog/2016/10/06/article-title MATCHES
+
+  CONTENT FILE: ./content/blog/2016__10__06__article.cson
+
+    { $layout: 'blogpost.html', title: 'Article' }
+
+  LAYOUT FILE: ./views/blogpost.html
+
+    <h1>{{ title }}</h1>
+
+=> <h1>Article</h1>
 ```
 
 * If there is content but no view, `next()` is called
-
-```
-GET /missing-view
-  1. ./content/missing-view.cson
-  2. view is missing
-  => next();
-```
 
 ### Basic homepage example with `__extend` content mixin
 
@@ -304,6 +317,11 @@ title: 'Second'
 ```
 
 #### The overview itself uses `__list`
+
+`__list` is a mixin that is somehwat harder to use.
+It lists a directory and replaces the key `__list` by whatever is given in the `as` property.
+
+[See an example about how `__list` works](https://github.com/jeroenransijn/expressful-content)
 
 ```blog.cson
 title: 'Blog'
