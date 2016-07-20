@@ -28,7 +28,7 @@
     "nunjucks": "^2.4.2",
     "remarkable": "^1.6.2",
     "serve-favicon": "^2.3.0",
-    "cli-table": "^0.3.1",
+    "cli-table": "^0.3.1"
   },
   "keywords": [
     "api",
