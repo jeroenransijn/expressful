@@ -67,16 +67,16 @@ Assume the following project structure
 ```
 .
 |-- /content/
-|   └-- /homepage.cson
+|   └-- /index.cson
 |-- /views/
-|   └-- /homepage.html
+|   └-- /index.html
 ```
 
 ```cson
-# ./content/homepage.cson
+# ./content/index.cson
 
 __extend: '_global.cson'
-title: 'Homepage'
+title: 'index'
 ```
 
 ```cson
@@ -86,7 +86,7 @@ brandName: 'Expressful'
 ```
 
 ```html
-<!-- ./views/homepage.html -->
+<!-- ./views/index.html -->
 <h1>{{ brandName }} - {{ title }}</h1>
 ```
 

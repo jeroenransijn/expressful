@@ -62,10 +62,10 @@ Most of your projects will look somewhat like this:
 |-- /css/                 # contains css files
 |-- /content              # contains json and cson content files
 |   |-- /about.json     
-|   └-- /homepage.cson
+|   └-- /index.cson
 |-- /views/               # contains html files
 |   |-- /about.html
-|   └-- /homepage.html
+|   └-- /index.html
 |-- /app.js               # starting point of your node app
 └-- /package.json         # information about your app and dependencies
 ```
