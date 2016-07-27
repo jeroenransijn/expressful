@@ -7,7 +7,6 @@ const serveContent = require('./lib/serve-content');
 
 const ROOT = path.dirname(require.main.filename);
 const CONTENT_DIRECTORY = path.join(ROOT, 'content');
-const CACHE_DIRECTORY = path.join(ROOT, 'cache');
 
 /**
  * Returns expressful app
@@ -18,9 +17,9 @@ const CACHE_DIRECTORY = path.join(ROOT, 'cache');
 function expressful (options) {
 
   const settings = Object.assign({
-    publicDirectory: 'public', // 'public' is the default static folder
-    viewsDirectory: 'views',
-    faviconPath: 'public/favicon.ico', // path to favicon
+    publicDirectory: path.join(ROOT, 'public'), // 'public' is the default static folder
+    viewsDirectory: path.join(ROOT, 'views'),
+    faviconPath: path.join(ROOT, 'public/favicon.ico'), // path to favicon
     muteFavicon: true, // make it easy to get started without a favicon
     useNunjucks: true // nunjucks is the default templating engine
   }, options || {});
