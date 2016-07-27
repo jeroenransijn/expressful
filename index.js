@@ -21,7 +21,8 @@ function expressful (options) {
     viewsDirectory: path.join(ROOT, 'views'),
     faviconPath: path.join(ROOT, 'public/favicon.ico'), // path to favicon
     muteFavicon: true, // make it easy to get started without a favicon
-    useNunjucks: true // nunjucks is the default templating engine
+    useNunjucks: true, // nunjucks is the default templating engine
+    printRoutes: true // wether or not to print routes, this is only in developement
   }, options || {});
 
   const app = express();
@@ -36,10 +37,8 @@ function expressful (options) {
     return app;
   }
 
-  app.start = () => {
-    start(app);
-    return app;
-  }
+  // Returns server
+  app.start = () => start(app, settings);
 
   return app;
 }

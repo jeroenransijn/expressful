@@ -1,6 +1,3 @@
+$layout: 'blog-post'
+__extend: '../_global.cson'
 title: 'My first title'
-content: '''
-  # My first title
-
-  lorem ipsum
-  '''
