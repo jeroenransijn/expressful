@@ -4,7 +4,7 @@ Expressful uses [expressful-content](https://github.com/jeroenransijn/expressful
 
 ## Basic Routing Example
 
-![Basic Routes infographic](docs/basic-routes.png)
+![Basic Routes infographic](./basic-routes.png)
 
 * **By default / routes to homepage**
 * **Filenames that start with an underscore (_) will not be routed**

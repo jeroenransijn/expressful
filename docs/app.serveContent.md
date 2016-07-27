@@ -1,7 +1,7 @@
 # app.serveContent();
 
 Creates routes for your app based on your `content` directory.
-[Learn how content routes work](docs/content-routes.md)
+[Learn how content routes work](./content-routes.md)
 
 ```javascript
 // ./app.js
