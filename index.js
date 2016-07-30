@@ -22,7 +22,8 @@ function expressful (options) {
     faviconPath: path.join(ROOT, 'public/favicon.ico'), // path to favicon
     muteFavicon: true, // make it easy to get started without a favicon
     useNunjucks: true, // nunjucks is the default templating engine
-    printRoutes: true // wether or not to print routes, this is only in developement
+    printRoutes: true, // wether or not to print routes, only in development
+    useDevProxy: true // wether to use a proxy for webpack, only in development
   }, options || {});
 
   const app = express();
