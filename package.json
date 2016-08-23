@@ -17,11 +17,10 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "cli-table": "^0.3.1",
-    "cookie-parser": "^1.4.3",
+    "compression": "^1.6.2",
     "cson": "^3.0.2",
     "errorhandler": "^1.4.3",
     "express": "^4.13.4",
-    "express-session": "^1.14.0",
     "expressful-content": "^0.1.1",
     "highlight.js": "^9.5.0",
     "http-proxy": "^1.14.0",

@@ -102,14 +102,13 @@ const app = expressful();
 3. sets up `nunjucks` templating (with `Remarkable` and `highlight.js`)
 4. sets up the following modules
   * `body-parser`
-  * `cookie-parser`
+  * `compression`
   * `errorhandler`
   * `morgan`
   * `serve-favicon`
-  * `express-session`
   * `errorhandler`
 
-**Note:** `multer` for file uploads is left out.
+**Note:** `multer`, `cookie-parser` and `express-session` are not in here
 
 ## API Reference
 
@@ -133,7 +132,8 @@ const app = expressful({
   viewsDirectory: 'views', // don't change this for no reason, used for testing mainly
   faviconPath: 'public/favicon.ico', // path to favicon
   muteFavicon: true, // make it easy to get started without a favicon
-  useNunjucks: true // nunjucks is the default templating engine
+  useNunjucks: true, // nunjucks is the default templating engine
+  staticMaxAge: '30 days' // Caching time for static resources
 });
 ```
 
