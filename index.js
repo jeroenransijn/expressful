@@ -5,9 +5,6 @@ const setup = require('./lib/setup');
 const start = require('./lib/start');
 const serveContent = require('./lib/serve-content');
 
-const ROOT = path.dirname(require.main.filename);
-const CONTENT_DIRECTORY = path.join(ROOT, 'content');
-
 /**
  * Returns expressful app
  *
@@ -15,6 +12,10 @@ const CONTENT_DIRECTORY = path.join(ROOT, 'content');
  * @return {object} expressful app object
  */
 function expressful (options) {
+
+  // There is no reliable way to get the root, allow for setting it manually
+  const ROOT = (options || {}).root || path.dirname(require.main.filename);
+  const CONTENT_DIRECTORY = path.join(ROOT, 'content');
 
   const settings = Object.assign({
     publicDirectory: path.join(ROOT, 'public'), // 'public' is the default static folder

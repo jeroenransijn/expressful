@@ -13,7 +13,9 @@ Expressful sets up a [Node.js](https://nodejs.org/en/) web server for the rest o
 
 ```javascript
 // app.js
-const app = require('expressful');
+const app = require('expressful')({
+  root: __dirname
+});
 app.serveContent();
 app.start();
 ```
@@ -128,12 +130,25 @@ const expressful = require('expressful');
 
 // Values are defaults
 const app = expressful({
+  root: path.dirname(require.main.filename), // The `root` of your project
   publicDirectory: 'public', // 'public' is the default static folder
   viewsDirectory: 'views', // don't change this for no reason, used for testing mainly
   faviconPath: 'public/favicon.ico', // path to favicon
   muteFavicon: true, // make it easy to get started without a favicon
   useNunjucks: true, // nunjucks is the default templating engine
   staticMaxAge: '30 days' // Caching time for static resources
+});
+```
+
+### Setting the root is advised
+
+```javascript
+// This would work in most cases, it works on Heroku for example
+const app = require('expressful')();
+
+// This will work anywhere
+const app = require('expressful')({
+  root: __dirname
 });
 ```
 
